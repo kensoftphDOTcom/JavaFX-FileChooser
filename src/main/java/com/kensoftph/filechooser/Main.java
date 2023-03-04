@@ -25,16 +25,36 @@ public class Main extends Application {
 
         button.setOnAction(actionEvent -> {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open a file");
-            fileChooser.setInitialDirectory(new File("C:\\"));
-            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPEG Image","*.jpg"),
-                    new FileChooser.ExtensionFilter("PNG Image", "*.png"), new FileChooser.ExtensionFilter("All image file","*.jpg","*.png"));
-            File selectedFile = fileChooser.showOpenDialog(stage);
+            fileChooser.setTitle("Save a file");
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")+ "/Desktop"));
+            //fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JPEG Image","*.jpg"), new FileChooser.ExtensionFilter("PNG Image", "*.png"), new FileChooser.ExtensionFilter("All image files","*.jpg","*.png"));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text file","*.txt"));
+            // this is for saving a file. remove the setInitialFileName if you are opening a file
+            fileChooser.setInitialFileName("Untitled");
+            //File selectedFile = fileChooser.showOpenDialog(stage);
+            File selectedFile = fileChooser.showSaveDialog(stage);
             if(selectedFile != null){
+
+                // this is for saving a file
+                try {
+                    FileWriter fileWriter = new FileWriter(selectedFile);
+                    BufferedWriter writer = new BufferedWriter(fileWriter);
+                    writer.write("Learning how to use the JavaFX FileChooser");
+                    writer.close();
+                    System.out.println("The file has been saved in "+ selectedFile.getAbsolutePath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                /* this is for opening a file
                 label.setText(selectedFile.getName());
                 Image image = new Image(selectedFile.getPath());
                 imgView.setImage(image);
-                /*try {
+                 */
+
+
+                /* This is for reading a text file
+                try {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(selectedFile));
                     StringBuilder stringBuilder = new StringBuilder();
                     String line;
@@ -59,7 +79,7 @@ public class Main extends Application {
         BorderPane.setAlignment(label, Pos.CENTER);
 
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("file-chooser.fxml"));
-        Scene scene = new Scene(layout, 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("JavaFX FileChooser");
         stage.setScene(scene);
         stage.show();
